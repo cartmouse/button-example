@@ -1,35 +1,45 @@
 import { render, screen } from "@testing-library/react";
 import Button from "./Button";
 
+const onClick = jest.fn();
+
 describe("Button", () => {
   it("should render a button", () => {
-    render(<Button />);
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    const { container } = render(
+      <Button progressToClick={0} onClick={onClick} />
+    );
+    expect(container.getElementsByClassName("button").length).toBe(1);
   });
 
   it("should be a 150px x 50px square", () => {
-    render(<Button />);
-    expect(screen.getByRole("button")).toHaveStyle({
+    const { container } = render(
+      <Button progressToClick={0} onClick={onClick} />
+    );
+    expect(container.getElementsByClassName("button")[0]).toHaveStyle({
       width: "150px",
       height: "50px",
     });
   });
 
   it("should have no border", () => {
-    render(<Button />);
-    expect(screen.getByRole("button")).toHaveStyle({
+    const { container } = render(
+      <Button progressToClick={0} onClick={onClick} />
+    );
+    expect(container.getElementsByClassName("button")[0]).toHaveStyle({
       border: "0px",
     });
   });
 
   it("should render a button of a given colour", () => {
-    const { rerender } = render(<Button colour="red" />);
-    expect(screen.getByRole("button")).toHaveStyle({
+    const { container, rerender } = render(
+      <Button progressToClick={0} colour="red" onClick={onClick} />
+    );
+    expect(container.getElementsByClassName("button")[0]).toHaveStyle({
       backgroundColor: "red",
     });
 
-    rerender(<Button colour="ff00ff" />);
-    expect(screen.getByRole("button")).toHaveStyle({
+    rerender(<Button progressToClick={0} colour="ff00ff" onClick={onClick} />);
+    expect(container.getElementsByClassName("button")[0]).toHaveStyle({
       backgroundColor: "ff00ff",
     });
   });
