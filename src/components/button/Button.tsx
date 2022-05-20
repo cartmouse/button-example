@@ -17,11 +17,11 @@ export default function Button(props: ButtonProps) {
 
     onMouseLeave: () => {
       setIsMouseOver(false);
-      setStyle((s) => ({
+      setStyle({
         ...defaultButtonStyle,
         backgroundColor: colour,
         transform: "scale(1)",
-      }));
+      });
     },
   };
 
@@ -53,7 +53,7 @@ export default function Button(props: ButtonProps) {
       "--right-width": `${progressToClick * 100 - 3}%`,
       "--left-height": `${progressToClick * 100 - 6}%`,
       "--right-height": `${progressToClick * 100 - 6}%`,
-      "--border-style": "solid",
+      "--border-style": "3px solid black",
     }));
 
     if (progressToClick >= 1) {
