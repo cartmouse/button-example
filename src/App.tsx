@@ -7,12 +7,17 @@ const defaultAppStyle = {
   backgroundColor: "#264653",
 };
 
-const App = () => {
+export default function App() {
+  // ================================= States =================================
   const [progressToClick, setProgressToClick] = useState(0);
-  const [intervalRef, setIntervalRef] = useState<NodeJS.Timer | undefined>();
   const [appStyle, setAppStyle] = useState(defaultAppStyle);
+  const [intervalRef, setIntervalRef] = useState<NodeJS.Timer | undefined>();
+
+  // ============================= Event Handlers =============================
 
   const simulateTouchFree = () => {
+    // Simulates the user moving their hand towards the screen
+
     if (![0, 1].includes(progressToClick)) {
       return;
     }
@@ -27,6 +32,7 @@ const App = () => {
     setAppStyle((s) => ({ ...s, backgroundColor: darken(colour, 80) }));
   };
 
+  // ================================ Effects ================================
   useEffect(() => {
     if (progressToClick >= 1) {
       setProgressToClick(1);
@@ -64,6 +70,4 @@ const App = () => {
       </div>
     </div>
   );
-};
-
-export default App;
+}
