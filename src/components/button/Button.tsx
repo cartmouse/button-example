@@ -1,60 +1,49 @@
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { ButtonProps, defaultButtonStyle } from "./types";
 
-interface ButtonProps {
-  progressToClick: number;
-  onClick: () => void;
-  colour?: string;
-}
+export default function Button(props: ButtonProps) {
+  const { colour, progressToClick, clickCallback, simulateTouchFree } = props;
 
-interface customCSS extends CSSProperties {
-  "--left-width"?: string;
-  "--left-height"?: string;
-  "--right-width"?: string;
-  "--right-height"?: string;
-  "--border-style"?: string;
-}
-
-const defaultButtonStyle: customCSS = {
-  height: "50px",
-  width: "100px",
-  border: 0,
-  borderTopLeftRadius: "10px",
-  borderBottomRightRadius: "10px",
-  backgroundColor: "#d5f4e6",
-  transition: "all 0.2s",
-  "--left-width": "10px",
-  "--left-height": "10px",
-  "--right-width": "10px",
-  "--right-height": "10px",
-  "--border-style": "0",
-};
-
-const Button = (props: ButtonProps) => {
+  // ================================= States =================================
   const [style, setStyle] = useState(defaultButtonStyle);
-  const { colour, progressToClick, onClick } = props;
+  const [isMouseOver, setIsMouseOver] = useState(false);
 
+  // ============================= Event Handlers =============================
+  const mouseEvents = {
+    onMouseEnter: () => {
+      setIsMouseOver(true);
+      setStyle((s) => ({ ...s, transform: "scale(1.2)" }));
+    },
+
+    onMouseLeave: () => {
+      setIsMouseOver(false);
+      setStyle((s) => ({
+        ...defaultButtonStyle,
+        backgroundColor: colour,
+        transform: "scale(1)",
+      }));
+    },
+  };
+
+  const onClick = () => {
+    if (simulateTouchFree) {
+      simulateTouchFree();
+    }
+  };
+
+  // ================================ Effects ================================
   useEffect(() => {
     if (colour) {
       setStyle((s) => ({ ...s, backgroundColor: colour }));
     }
   }, [colour]);
 
-  const mouseEvents = {
-    onMouseEnter: () => {
-      setStyle((s) => ({ ...s, transform: "scale(1.1)" }));
-    },
-
-    onMouseLeave: () => {
-      setStyle((s) => ({ ...s, transform: "scale(1)" }));
-    },
-  };
-
   useEffect(() => {
-    if (progressToClick == 0) {
-      setStyle((s) => ({
-        ...s,
-        "--border-style": "0",
-      }));
+    if (progressToClick === 0 || !isMouseOver) {
+      setStyle({
+        ...defaultButtonStyle,
+        backgroundColor: colour,
+      });
       return;
     }
 
@@ -66,16 +55,14 @@ const Button = (props: ButtonProps) => {
       "--right-height": `${progressToClick * 100 - 6}%`,
       "--border-style": "solid",
     }));
+
+    if (progressToClick >= 1) {
+      clickCallback(colour);
+    }
+    // eslint-disable-next-line
   }, [progressToClick]);
 
   return (
-    <div
-      className="button"
-      style={style}
-      {...mouseEvents}
-      onClick={() => onClick()}
-    />
+    <div className="button" style={style} {...mouseEvents} onClick={onClick} />
   );
-};
-
-export default Button;
+}
